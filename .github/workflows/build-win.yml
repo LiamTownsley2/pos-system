@@ -3,7 +3,7 @@ name: Build and Release Windows App
 on:
   push:
     tags:
-      - 'v*' # Only triggers on version tags like v1.0.0
+      - 'v*'
 
 jobs:
   build:
