@@ -32,3 +32,12 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### Releasing
+
+```bash
+# Will match any v*.*.* number.
+$ git commit -am "v1.0.0"
+$ git tag v1.0.0
+$ git push && git push --tags
+```
