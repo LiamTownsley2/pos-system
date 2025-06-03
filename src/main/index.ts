@@ -2,6 +2,12 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import electronUpdater, { type AppUpdater } from 'electron-updater'
+
+export function getAutoUpdater(): AppUpdater {
+  const { autoUpdater } = electronUpdater
+  return autoUpdater
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -53,6 +59,16 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   createWindow()
+
+  const autoUpdater = getAutoUpdater()
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = false
+
+  autoUpdater.on('update-downloaded', () => {
+    autoUpdater.quitAndInstall()
+  })
+
+  autoUpdater.checkForUpdates()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

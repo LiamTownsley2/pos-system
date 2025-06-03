@@ -1,6 +1,6 @@
 {
   "name": "pos-system",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An Electron application with React and TypeScript for a POS System.",
   "main": "./out/main/index.js",
   "author": "liamtownsley.me",
@@ -32,7 +32,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
-    "electron-updater": "^6.3.9"
+    "electron-updater": "^6.6.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
