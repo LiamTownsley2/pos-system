@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, dialog, MessageBoxOptions } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -63,28 +63,21 @@ app.whenReady().then(() => {
   createWindow()
 
   const autoUpdater = getAutoUpdater()
-  autoUpdater.autoInstallOnAppQuit = true
   autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = false
 
-  autoUpdater.on('update-downloaded', (params) => {
-    const dialogOpts: MessageBoxOptions = {
-      type: 'info',
-      buttons: ['Restart', 'Later'],
-      title: 'Application Update',
-      message:
-        (process.platform === 'win32'
-          ? Array.isArray(params.releaseNotes)
-            ? params.releaseNotes
-                .map((note) => (typeof note === 'string' ? note : note.note))
-                .join('\n')
-            : params.releaseNotes || ''
-          : params.releaseName) || 'No release notes provided.',
-      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-    }
+  autoUpdater.on('update-downloaded', () => {
+    autoUpdater.quitAndInstall()
+  })
 
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall()
-    })
+  autoUpdater.checkForUpdates()
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 60000)
+
+  autoUpdater.on('error', (message) => {
+    console.error('There was a problem updating the application')
+    console.error(message)
   })
 
   app.on('activate', function () {
