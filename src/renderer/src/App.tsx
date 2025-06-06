@@ -1,9 +1,8 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
 import { useEffect, useState } from 'react'
+import { Badge, Button, Progress } from 'flowbite-react'
 
 function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('update')
+  // const ipcHandle = (): void => window.electron.ipcRenderer.send('update')
   const [version, setVersion] = useState<string | null>(null)
 
   useEffect(() => {
@@ -15,26 +14,20 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+      <p>test {version}</p>
+      <Button color="red">Red</Button>
+      <Progress progress={45} />
+      <div className="flex flex-wrap gap-2">
+        <Badge color="info" size="sm">
+          Default
+        </Badge>
+        <Badge color="gray" size="sm">
+          Dark
+        </Badge>
+        <Badge color="failure" size="sm">
+          Failure
+        </Badge>
       </div>
-      {version && <p className="tip">You are on v{version}</p>}
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Check for Update
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
     </>
   )
 }
