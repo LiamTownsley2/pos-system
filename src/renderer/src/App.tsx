@@ -7,7 +7,10 @@ function App(): React.JSX.Element {
   const [version, setVersion] = useState<string | null>(null)
 
   useEffect(() => {
-    window.api.getAppVersion().then(setVersion)
+    window.electron.ipcRenderer.invoke('get-app-version').then((ver) => {
+      console.log('Version:', ver)
+      setVersion(ver)
+    })
   }, [])
 
   return (
@@ -18,7 +21,7 @@ function App(): React.JSX.Element {
         Build an Electron app with <span className="react">React</span>
         &nbsp;and <span className="ts">TypeScript</span>
       </div>
-      {version && <p className="tip">You are on {version}</p>}
+      {version && <p className="tip">You are on v{version}</p>}
       <div className="actions">
         <div className="action">
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
