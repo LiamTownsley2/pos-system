@@ -12,9 +12,7 @@ function App(): React.JSX.Element {
         Build an Electron app with <span className="react">React</span>
         &nbsp;and <span className="ts">TypeScript</span>
       </div>
-      <p className="tip">
-        You can no longer press <code>F12</code> to open the devTool. You are on v1.0.7
-      </p>
+      <p className="tip">You are on v1.0.8</p>
       <div className="actions">
         <div className="action">
           <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
@@ -23,7 +21,7 @@ function App(): React.JSX.Element {
         </div>
         <div className="action">
           <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
+            Check for Update
           </a>
         </div>
       </div>
