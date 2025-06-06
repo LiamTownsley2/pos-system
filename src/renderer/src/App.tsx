@@ -13,7 +13,7 @@ function App(): React.JSX.Element {
         &nbsp;and <span className="ts">TypeScript</span>
       </div>
       <p className="tip">
-        You can no longer press <code>F12</code> to open the devTool. You are on v1.0.6
+        You can no longer press <code>F12</code> to open the devTool. You are on v1.0.7
       </p>
       <div className="actions">
         <div className="action">
