@@ -57,10 +57,15 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('update', () => autoUpdater.checkForUpdatesAndNotify())
-
+  ipcMain.handle('get-app-version', () => {
+    return app.getVersion()
+  })
   createWindow()
 
   const autoUpdater = getAutoUpdater()
+  autoUpdater.autoInstallOnAppQuit = true
+  autoUpdater.autoDownload = true
+
   autoUpdater.on('update-downloaded', (params) => {
     const dialogOpts: MessageBoxOptions = {
       type: 'info',
@@ -81,14 +86,6 @@ app.whenReady().then(() => {
       if (returnValue.response === 0) autoUpdater.quitAndInstall()
     })
   })
-  // autoUpdater.autoDownload = true
-  // autoUpdater.autoInstallOnAppQuit = false
-
-  // autoUpdater.on('update-downloaded', () => {
-  //   autoUpdater.quitAndInstall()
-  // })
-
-  // autoUpdater.checkForUpdates()
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
