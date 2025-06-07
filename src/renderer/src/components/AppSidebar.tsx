@@ -38,17 +38,17 @@ const groups = [
     children: [
       {
         title: 'Home',
-        url: '/',
+        url: '#',
         icon: Home
       },
       {
         title: 'Inbox',
-        url: '/inbox',
+        url: '#/inbox',
         icon: Inbox
       },
       {
         title: 'Calendar',
-        url: '/calendar',
+        url: '#/calendar',
         icon: Calendar
       }
     ]
@@ -58,7 +58,7 @@ const groups = [
     children: [
       {
         title: 'View All Products',
-        url: '/products',
+        url: '#/products',
         icon: LucideArchive
       }
     ]
