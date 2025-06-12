@@ -3,7 +3,8 @@ import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar'
 import { AppSidebar } from './components/AppSidebar'
 import { Separator } from './components/ui/separator'
 import AppBreadcrumb from './components/AppBreadcrumb'
-import { Clock } from 'lucide-react'
+import { Clock, LockKeyhole } from 'lucide-react'
+import { Button } from './components/ui/button'
 
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [currentTime, setCurrentTime] = useState<string>(() => {
@@ -21,18 +22,24 @@ export default function Layout({ children }: { children: React.ReactNode }): Rea
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar username="Liam Townsley" />
       <main className="flex-1 w-full m-4">
         <div className="flex h-5 items-center space-x-4 text-sm">
           <SidebarTrigger />
           <Separator orientation="vertical" />
           <AppBreadcrumb />
-          <div className="ml-auto flex gap-2 items-center">
-            <Clock className="h-4" />
-            <p>{currentTime}</p>
+          <div className="ml-auto flex flex-row">
+            <Button variant={'ghost'}>
+              <LockKeyhole /> Lock System
+            </Button>
+            <div className="flex items-center">
+              <Separator orientation="vertical" className="mx-2" />
+              <Clock className="h-4" />
+              <p>{currentTime}</p>
+            </div>
           </div>
         </div>
-        {children}
+        <div className="mt-4">{children}</div>
       </main>
     </SidebarProvider>
   )

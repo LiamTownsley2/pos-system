@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
-import { Separator } from '@renderer/components/ui/separator'
 import { CategoryData, Product } from '@renderer/lib/test-data'
+import { hoverShadowClass } from '@renderer/lib/utils'
 import { ShoppingCartIcon } from 'lucide-react'
 
 const formatter = new Intl.NumberFormat('en-GB', {
@@ -16,17 +16,9 @@ export default function ProductCard({
   onClick?: React.MouseEventHandler<HTMLDivElement> | undefined
 }): React.JSX.Element {
   const category = CategoryData.find((x) => x.id === product.category)
-  const hoverShadowClass = {
-    0: 'hover:shadow-[0_0_15px_#9E9D24]',
-    1: 'hover:shadow-[0_0_15px_#5C4033]',
-    2: 'hover:shadow-[0_0_15px_#4CAF50]',
-    3: 'hover:shadow-[0_0_15px_#8B5E3C]',
-    4: 'hover:shadow-[0_0_15px_#D4A373]',
-    5: 'hover:shadow-[0_0_15px_#C62828]'
-  }[category?.id || 0]
   return (
     <Card
-      className={`transform duration-200 hover:scale-105 select-none flex flex-col justify-between ${hoverShadowClass}`}
+      className={`transform duration-200 hover:scale-105 gap-2 select-none flex flex-col justify-between ${hoverShadowClass[category?.id || 0]}`}
       onClick={onClick}
     >
       <CardHeader>
@@ -45,7 +37,6 @@ export default function ProductCard({
           <span className="text-xs">{category?.name.replace('and', '&')}</span>
         </div>
 
-        <Separator orientation="vertical" className="h-4" />
         <div className="text-xs flex">
           <ShoppingCartIcon height={15} />
           <span>{Math.floor(Math.random() * 1000)} in stock</span>

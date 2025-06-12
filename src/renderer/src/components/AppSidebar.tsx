@@ -11,16 +11,23 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import {
+  Boxes,
   Calendar,
   ChevronUp,
+  ClipboardList,
   Cog,
+  FileBarChart,
   Home,
   Inbox,
   LogOut,
-  LucideArchive,
+  Percent,
   PlusCircle,
+  Search,
+  Settings,
   User2,
-  User2Icon
+  User2Icon,
+  UserPlus,
+  Users
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -55,12 +62,52 @@ const groups = [
     ]
   },
   {
-    label: 'Products',
+    label: 'Member Management',
     children: [
       {
-        title: 'View All Products',
-        url: '#/products',
-        icon: LucideArchive
+        title: 'Register Member',
+        url: '#/register-member',
+        icon: UserPlus
+      },
+      {
+        title: 'Member Lookup',
+        url: '#/member-lookup',
+        icon: Search
+      }
+    ]
+  },
+  {
+    label: 'Management',
+    children: [
+      {
+        title: 'Inventory',
+        url: '#/inventory',
+        icon: Boxes
+      },
+      {
+        title: 'Manage Staff',
+        url: '#/staff-management',
+        icon: Users
+      },
+      {
+        title: 'Sales Reports',
+        url: '#/sales-reports',
+        icon: FileBarChart
+      },
+      {
+        title: 'Promotions',
+        url: '#/promotions',
+        icon: Percent
+      },
+      {
+        title: 'Audit Logs',
+        url: '#/audit-logs',
+        icon: ClipboardList
+      },
+      {
+        title: 'Settings',
+        url: '#/settings',
+        icon: Settings
       }
     ]
   }
@@ -90,38 +137,40 @@ const AppContent = (
   </SidebarContent>
 )
 
-const AppSidebarFooter = (
-  <SidebarFooter>
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton>
-              <User2 /> Username
-              <ChevronUp className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-            <DropdownMenuItem>
-              <User2Icon />
-              <span>My Account</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Cog />
-              <span>Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem style={{ color: '#ff0000' }}>
-              <LogOut color="#ff0000" />
-              <span>Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  </SidebarFooter>
-)
+const AppSidebarFooter = (username: string): React.JSX.Element => {
+  return (
+    <SidebarFooter>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton>
+                <User2 /> {username}
+                <ChevronUp className="ml-auto" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
+              <DropdownMenuItem>
+                <User2Icon />
+                <span>My Account</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Cog />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem style={{ color: '#ff0000' }}>
+                <LogOut color="#ff0000" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarFooter>
+  )
+}
 
-export function AppSidebar(): React.JSX.Element {
+export function AppSidebar({ username }: { username: string }): React.JSX.Element {
   return (
     <Sidebar>
       <SidebarHeader>
@@ -134,7 +183,7 @@ export function AppSidebar(): React.JSX.Element {
         </Link>
       </SidebarHeader>
       {AppContent}
-      {AppSidebarFooter}
+      {AppSidebarFooter(username)}
     </Sidebar>
   )
 }
