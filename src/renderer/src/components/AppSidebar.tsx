@@ -31,6 +31,7 @@ import {
 import { SearchForm } from './SearchForm'
 import { HomeButton } from './HomeButton'
 import { Button } from './ui/button'
+import { Link } from 'react-router-dom'
 
 const groups = [
   {
@@ -126,9 +127,11 @@ export function AppSidebar(): React.JSX.Element {
       <SidebarHeader>
         <HomeButton />
         <SearchForm />
-        <Button variant={'outline'} className="mx-2 h-8">
-          <PlusCircle /> Begin Transaction
-        </Button>
+        <Link to={'/pos'} className="mx-2 h-8">
+          <Button variant={'outline'} className="h-8 w-full">
+            <PlusCircle /> Begin Transaction
+          </Button>
+        </Link>
       </SidebarHeader>
       {AppContent}
       {AppSidebarFooter}

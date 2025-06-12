@@ -1,9 +1,11 @@
+import { Card } from '@renderer/components/ui/card'
+
 export default function Home(): React.JSX.Element {
   return (
     <div className="flex w-full">
-      <div className="p-2 mt-4 bg-accent rounded-md w-full flex-1">
+      <Card className="p-2 mt-4 grow">
         <p>test</p>
-      </div>
+      </Card>
     </div>
   )
 }

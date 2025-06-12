@@ -1,58 +1,36 @@
-// import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar'
 import { AppSidebar } from './components/AppSidebar'
 import { Separator } from './components/ui/separator'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from './components/ui/breadcrumb'
-import { Fragment } from 'react/jsx-runtime'
-import { Link, useLocation } from 'react-router-dom'
-
-const toTitle = (str: string): string =>
-  str.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+import AppBreadcrumb from './components/AppBreadcrumb'
+import { Clock } from 'lucide-react'
 
 export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
-  const location = useLocation()
-  const pathnames = location.pathname.split('/').filter(Boolean)
+  const [currentTime, setCurrentTime] = useState<string>(() => {
+    const now = new Date()
+    return now.toLocaleTimeString('en-US', { hour12: false })
+  })
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date()
+      setCurrentTime(now.toLocaleTimeString('en-US', { hour12: false }))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="p-4 flex-1 w-full">
+      <main className="flex-1 w-full m-4">
         <div className="flex h-5 items-center space-x-4 text-sm">
           <SidebarTrigger />
           <Separator orientation="vertical" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              {pathnames.map((segment, i) => {
-                const to = '/' + pathnames.slice(0, i + 1).join('/')
-                const isLast = i === pathnames.length - 1
-
-                return (
-                  <Fragment key={to}>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      {isLast ? (
-                        <BreadcrumbPage>{toTitle(segment)}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink asChild>
-                          <Link to={to}>{toTitle(segment)}</Link>
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                  </Fragment>
-                )
-              })}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <AppBreadcrumb />
+          <div className="ml-auto flex gap-2 items-center">
+            <Clock className="h-4" />
+            <p>{currentTime}</p>
+          </div>
         </div>
         {children}
       </main>

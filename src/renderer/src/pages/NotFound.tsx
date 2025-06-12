@@ -13,7 +13,7 @@ export default function NotFound(): React.JSX.Element {
             to={'https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404'}
             target="_blank"
           >
-            learn more about HTTP errors
+            learn more about this error
           </Link>
           ?
         </p>

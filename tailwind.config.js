@@ -8,7 +8,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: '#4F46E5'
+        brand: '#4F46E5',
+        fertilisers: '#9E9D24',
+        soil: '#5C4033',
+        plantcare: '#4CAF50',
+        canes: '#8B5E3C',
+        seeds: '#D4A373',
+        fuel: '#C62828'
       },
       spacing: {
         128: '32rem'
