@@ -7,13 +7,6 @@ enum Categories {
   Fuel = 5
 }
 
-export type Category = {
-  id: number
-  name: string
-  image: string
-  colour: string
-}
-
 export const CategoryData = [
   {
     id: 0,

@@ -1,6 +1,6 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*"],
+  "include": ["src/types/**/*", "src/types/*", "electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "src/preload/index.d.ts"],
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",

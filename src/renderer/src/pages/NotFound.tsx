@@ -1,3 +1,5 @@
+import { Button } from '@renderer/components/ui/button'
+import { ArrowBigLeftIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function NotFound(): React.JSX.Element {
@@ -17,6 +19,9 @@ export default function NotFound(): React.JSX.Element {
           </Link>
           ?
         </p>
+        <Button className="mt-5 h-10 w-1/4" onClick={() => window.history.back()}>
+          <ArrowBigLeftIcon /> Go Back
+        </Button>
       </div>
     </div>
   )
