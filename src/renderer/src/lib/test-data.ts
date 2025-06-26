@@ -7,6 +7,12 @@ enum Categories {
   Fuel = 5
 }
 
+export interface Category {
+  id: number
+  name: string
+  colour: string
+}
+
 export const CategoryData = [
   {
     id: 0,
