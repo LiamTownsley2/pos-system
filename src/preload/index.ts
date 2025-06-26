@@ -1,5 +1,6 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { Member } from '../types/member'
 
 // Custom APIs for renderer
 const api = {}
@@ -11,6 +12,16 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('db', {
+      // Members
+      createMember: (member: Partial<Omit<Member, 'id' | 'registered_at'>>) =>
+        ipcRenderer.invoke('db:createMember', member),
+      getMemberById: (id: string) => ipcRenderer.invoke('db:getMemberById', id),
+      getAllMembers: () => ipcRenderer.invoke('db:getAllMembers'),
+      updateMember: (id: string, updates: Partial<Omit<Member, 'id' | 'registered_at'>>) =>
+        ipcRenderer.invoke('db:updateMember', id, updates),
+      deleteMember: (id: string) => ipcRenderer.invoke('db:deleteMember', id)
+    })
   } catch (error) {
     console.error(error)
   }

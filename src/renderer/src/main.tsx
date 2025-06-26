@@ -7,6 +7,8 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import PointOfSale from './pages/PointOfSale'
+import RegisterMember from './pages/RegisterMember'
+import MemberLookup from './pages/MemberLookup'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,6 +18,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={<Home />} />
           <Route path="/pos" element={<PointOfSale />} />
+          <Route path="/register-member" element={<RegisterMember />} />
+          <Route path="/member-lookup" element={<MemberLookup />} />
         </Routes>
       </Layout>
     </HashRouter>
