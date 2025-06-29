@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card } from './ui/card'
-import { Category, ProductData } from '@renderer/lib/test-data'
+import { ProductData } from '@renderer/lib/test-data'
+import { Category } from 'src/types/categories'
 
 export default function CarouselCard({ category }: { category: Category }): React.JSX.Element {
   return (

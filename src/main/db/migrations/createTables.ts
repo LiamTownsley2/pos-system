@@ -22,6 +22,12 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
       registered_at INTEGER
     );
 
+    CREATE TABLE IF NOT EXISTS categories (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      colour TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS receipts (
       id TEXT PRIMARY KEY,
       member_id TEXT,

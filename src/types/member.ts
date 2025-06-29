@@ -1,4 +1,4 @@
-export interface Member {
+export type Member = {
   id: string
   short_id: string
   title: string

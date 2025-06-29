@@ -5,10 +5,19 @@ import {
   CarouselNext,
   CarouselPrevious
 } from '@renderer/components/ui/carousel'
-import { CategoryData } from '@renderer/lib/test-data'
 import CarouselCard from './CarouselCard'
+import React, { useEffect } from 'react'
+import { Category } from 'src/types/categories'
 
 export default function CategoryCarousel(): React.JSX.Element {
+  const [categories, setCategories] = React.useState<Category[]>([])
+  useEffect(() => {
+    async function fetchCategories(): Promise<void> {
+      const _categories = await window.db.getAllCategories()
+      setCategories(_categories)
+    }
+    fetchCategories()
+  }, [])
   return (
     <div className="mx-8">
       <Carousel
@@ -18,7 +27,7 @@ export default function CategoryCarousel(): React.JSX.Element {
         }}
       >
         <CarouselContent>
-          {[{ id: -1, name: 'All', image: '', colour: '#000000' }, ...CategoryData].map(
+          {[{ id: -1, name: 'All', image: '', colour: '#000000' }, ...categories].map(
             (category, i) => {
               return (
                 <CarouselItem key={i} className="basis-1/3">

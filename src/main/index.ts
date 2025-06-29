@@ -11,6 +11,14 @@ import {
   getMemberById,
   updateMember
 } from './db/models/members'
+import {
+  createCategory,
+  deleteCategory,
+  getAllCategories,
+  getCategoryById,
+  getCategoryByName,
+  updateCategory
+} from './db/models/categories'
 
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -53,6 +61,14 @@ function setupIPC(): void {
   ipcMain.handle('db:getAllMembers', () => getAllMembers())
   ipcMain.handle('db:updateMember', (_e, id, updates) => updateMember(id, updates))
   ipcMain.handle('db:deleteMember', (_e, id) => deleteMember(id))
+
+  // Categories
+  ipcMain.handle('db:createCategory', (_e, category) => createCategory(category))
+  ipcMain.handle('db:getCategoryById', (_e, id) => getCategoryById(id))
+  ipcMain.handle('db:getCategoryByName', (_e, name) => getCategoryByName(name))
+  ipcMain.handle('db:getAllCategories', () => getAllCategories())
+  ipcMain.handle('db:updateCategory', (_e, id, updates) => updateCategory(id, updates))
+  ipcMain.handle('db:deleteCategory', (_e, id) => deleteCategory(id))
 }
 
 function configureAutoUpdater(updater: AppUpdater): void {

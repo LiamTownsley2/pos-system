@@ -1,7 +1,9 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
-import { CategoryData, Product } from '@renderer/lib/test-data'
 import { hoverShadowClass } from '@renderer/lib/utils'
 import { ShoppingCartIcon } from 'lucide-react'
+import React, { useEffect } from 'react'
+import { Category } from 'src/types/categories'
+import { Product } from 'src/types/product'
 
 const formatter = new Intl.NumberFormat('en-GB', {
   style: 'currency',
@@ -15,7 +17,14 @@ export default function ProductCard({
   product: Product
   onClick?: React.MouseEventHandler<HTMLDivElement> | undefined
 }): React.JSX.Element {
-  const category = CategoryData.find((x) => x.id === product.category)
+  const [category, setCategory] = React.useState<Category | undefined>(undefined)
+  useEffect(() => {
+    async function fetchCategory(): Promise<void> {
+      const _category = await window.db.getCategoryById(product.category.toString())
+      setCategory(_category)
+    }
+    fetchCategory()
+  }, [product.category])
   return (
     <Card
       className={`transform duration-200 hover:scale-105 gap-2 select-none flex flex-col justify-between ${hoverShadowClass[category?.id || 0]}`}

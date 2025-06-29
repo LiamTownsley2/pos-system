@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound'
 import PointOfSale from './pages/PointOfSale'
 import RegisterMember from './pages/RegisterMember'
 import MemberLookup from './pages/MemberLookup'
+import Inventory from './pages/Inventory'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/pos" element={<PointOfSale />} />
           <Route path="/register-member" element={<RegisterMember />} />
           <Route path="/member-lookup" element={<MemberLookup />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Routes>
       </Layout>
     </HashRouter>

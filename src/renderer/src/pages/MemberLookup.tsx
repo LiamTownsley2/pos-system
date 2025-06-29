@@ -1,5 +1,5 @@
 import { LookupForm } from '@renderer/components/LookupForm'
-import { MembershipTable } from '@renderer/components/MembershipTable'
+import { MembershipTable } from '@renderer/components/tables/membership/MembershipTable'
 import {
   Card,
   CardContent,

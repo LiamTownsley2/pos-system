@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Member } from 'src/types/member'
-import { Button } from './ui/button'
+import { Button } from '../../ui/button'
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from './ui/dropdown-menu'
+} from '../../ui/dropdown-menu'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 

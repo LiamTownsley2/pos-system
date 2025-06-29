@@ -3,8 +3,8 @@ import CategoryCarousel from '@renderer/components/CategoryCarousel'
 import OrderTranscript from '@renderer/components/OrderTranscript'
 import ProductGrid from '@renderer/components/ProductGrid'
 import { Separator } from '@renderer/components/ui/separator'
-import { Product } from '@renderer/lib/test-data'
 import { useState } from 'react'
+import { Product } from 'src/types/product'
 
 export default function PointOfSale(): React.JSX.Element {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)

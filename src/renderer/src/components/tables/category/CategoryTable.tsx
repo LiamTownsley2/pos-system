@@ -7,19 +7,19 @@ import {
   useReactTable,
   VisibilityState
 } from '@tanstack/react-table'
-import { Button } from './ui/button'
+import { Button } from '../../ui/button'
 import React from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
-import { membership_column } from './MembershipColumn'
-import { Member } from 'src/types/member'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
+import { category_column } from './CategoryColumn'
+import { Category } from 'src/types/categories'
 
-export function MembershipTable({ members }: { members: Member[] }): React.JSX.Element {
+export function CategoryTable({ categories }: { categories: Category[] }): React.JSX.Element {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
   const table = useReactTable({
-    data: members,
-    columns: membership_column,
+    data: categories,
+    columns: category_column,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -64,7 +64,7 @@ export function MembershipTable({ members }: { members: Member[] }): React.JSX.E
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={membership_column.length} className="h-24 text-center">
+                <TableCell colSpan={category_column.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>
