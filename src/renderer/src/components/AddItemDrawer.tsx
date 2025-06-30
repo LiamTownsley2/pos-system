@@ -9,8 +9,8 @@ import {
   DrawerHeader,
   DrawerTitle
 } from './ui/drawer'
-import { Product } from '@renderer/lib/test-data'
 import { useState } from 'react'
+import { Product } from 'src/types/product'
 
 export function AddItemDrawer({
   drawerOpen,
@@ -26,6 +26,10 @@ export function AddItemDrawer({
     setGoal(Math.max(1, Math.min(100, goal + adjustment)))
   }
 
+  const formatter = new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: 'GBP'
+  })
   return (
     <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} onClose={() => setGoal(1)}>
       <DrawerContent>
@@ -52,7 +56,10 @@ export function AddItemDrawer({
               <div className="flex-1 text-center">
                 <div className="text-7xl font-bold tracking-tighter">{goal}</div>
                 <div className="text-muted-foreground text-[0.70rem] uppercase">
-                  {selectedProduct?.unit}
+                  {selectedProduct?.price_per_unit &&
+                    formatter.format(selectedProduct?.price_per_unit)}{' '}
+                  / {selectedProduct?.unit} ={' '}
+                  <span>{formatter.format((selectedProduct?.price_per_unit || 0) * goal)}</span>
                 </div>
               </div>
               <Button

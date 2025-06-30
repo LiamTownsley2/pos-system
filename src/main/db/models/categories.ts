@@ -3,7 +3,7 @@ import { getDatabase } from '../index'
 import { v7 as uuidv7 } from 'uuid'
 
 // Create
-export function createCategory(category: Partial<Omit<Category, 'id'>>): Category {
+export function createCategory(category: Omit<Category, 'id'>): Category {
   const db = getDatabase()
 
   const _id = uuidv7()

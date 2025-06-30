@@ -3,20 +3,56 @@ import CategoryCarousel from '@renderer/components/CategoryCarousel'
 import OrderTranscript from '@renderer/components/OrderTranscript'
 import ProductGrid from '@renderer/components/ProductGrid'
 import { Separator } from '@renderer/components/ui/separator'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Category } from 'src/types/categories'
 import { Product } from 'src/types/product'
 
 export default function PointOfSale(): React.JSX.Element {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [products, setProducts] = useState<Product[] | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [filteredCategory, setFilteredCategory] = useState<Category | null>(null)
+
+  useEffect(() => {
+    async function fetchCategories(): Promise<void> {
+      const _categories = await window.db.getAllCategories()
+      setCategories(_categories)
+    }
+    async function fetchProducts(): Promise<void> {
+      const _products = await window.db.getAllProducts()
+      setProducts(_products)
+    }
+    fetchCategories()
+    fetchProducts()
+  }, [])
 
   return (
-    <main className="mx-4">
+    <main className="mx-4 overflow-y-hidden">
       <div className="flex flex-row gap-8">
         <main className=" grow w-full flex-1 h-svh mb-[-100px]">
-          <CategoryCarousel />
+          {products && categories && (
+            <CategoryCarousel
+              products={products}
+              categories={categories}
+              filteredCategory={filteredCategory}
+              setFilteredCategory={setFilteredCategory}
+            />
+          )}
           <Separator className="my-4" />
-          <ProductGrid setSelectedProduct={setSelectedProduct} setDrawerOpen={setDrawerOpen} />
+          {products && (
+            <div className="pb-10 h-[80%] pr-5 overflow-x-auto">
+              <ProductGrid
+                products={products.filter((product) =>
+                  filteredCategory?.id == '-1' || filteredCategory == null
+                    ? true
+                    : product.category == filteredCategory?.id
+                )}
+                setSelectedProduct={setSelectedProduct}
+                setDrawerOpen={setDrawerOpen}
+              />
+            </div>
+          )}
         </main>
         <OrderTranscript />
       </div>

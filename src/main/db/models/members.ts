@@ -4,7 +4,7 @@ import { v7 as uuidv7 } from 'uuid'
 import { encode } from 'hi-base32'
 
 // Create
-export function createMember(member: Partial<Omit<Member, 'id' | 'registered_at'>>): Member {
+export function createMember(member: Omit<Member, 'id' | 'registered_at'>): Member {
   const db = getDatabase()
 
   const _id = uuidv7()

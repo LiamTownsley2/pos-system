@@ -34,7 +34,9 @@ export default function Home(): React.JSX.Element {
               forename: 'Test',
               surname: 'user',
               email: 'testuser@test.com',
-              phone: '07707129263'
+              phone: '07707129263',
+              title: '',
+              short_id: ''
             })
             alert(
               [`ID: ${_member.id}`, `Email: ${_member.email}`, `Name: ${_member.forename}`].join(
@@ -44,6 +46,21 @@ export default function Home(): React.JSX.Element {
           }}
         >
           Add Test Post
+        </Button>
+        <Button
+          onClick={async () => {
+            alert(
+              JSON.stringify(
+                await window.db.createStockMovement({
+                  product_id: '0197bda3-2cf5-7059-ad8a-8ec0b6c62981',
+                  quantity: 25,
+                  type: 'in'
+                })
+              )
+            )
+          }}
+        >
+          Create Test stock movement
         </Button>
         <div className="mt-4">
           {loading ? (

@@ -105,7 +105,7 @@ const groups = [
         icon: ClipboardList
       },
       {
-        title: 'Settings',
+        title: 'System Settings',
         url: '#/settings',
         icon: Settings
       }
@@ -156,7 +156,7 @@ const AppSidebarFooter = (username: string): React.JSX.Element => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Cog />
-                <span>Settings</span>
+                <span>My Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem style={{ color: '#ff0000' }}>
                 <LogOut color="#ff0000" />

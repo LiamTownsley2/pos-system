@@ -28,6 +28,36 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
       colour TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS products (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      unit TEXT,
+      price_per_unit REAL,
+      category TEXT,
+      quantity INTEGER,
+      FOREIGN KEY(category) REFERENCES categories(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS stock_movements (
+      id TEXT PRIMARY KEY,
+      product_id TEXT,
+      type TEXT CHECK(type IN ('in', 'out')),
+      quantity INTEGER,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      FOREIGN KEY(product_id) REFERENCES products(id) ON DELETE SET NULL
+    );
+
+    CREATE TRIGGER IF NOT EXISTS update_inventory_quantity_after_insert
+    AFTER INSERT ON stock_movements
+    BEGIN
+      UPDATE products
+      SET quantity = quantity + CASE
+        WHEN NEW.type = 'in' THEN NEW.quantity
+        ELSE -NEW.quantity
+      END
+      WHERE id = NEW.product_id;
+    END;
+
     CREATE TABLE IF NOT EXISTS receipts (
       id TEXT PRIMARY KEY,
       member_id TEXT,

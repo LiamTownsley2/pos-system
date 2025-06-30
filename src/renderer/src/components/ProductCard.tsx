@@ -48,7 +48,7 @@ export default function ProductCard({
 
         <div className="text-xs flex">
           <ShoppingCartIcon height={15} />
-          <span>{Math.floor(Math.random() * 1000)} in stock</span>
+          <span>{product.quantity || 0} in stock</span>
         </div>
       </CardFooter>
     </Card>

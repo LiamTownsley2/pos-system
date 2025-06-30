@@ -6,18 +6,21 @@ import {
   CarouselPrevious
 } from '@renderer/components/ui/carousel'
 import CarouselCard from './CarouselCard'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Category } from 'src/types/categories'
+import { Product } from 'src/types/product'
 
-export default function CategoryCarousel(): React.JSX.Element {
-  const [categories, setCategories] = React.useState<Category[]>([])
-  useEffect(() => {
-    async function fetchCategories(): Promise<void> {
-      const _categories = await window.db.getAllCategories()
-      setCategories(_categories)
-    }
-    fetchCategories()
-  }, [])
+export default function CategoryCarousel({
+  products,
+  categories,
+  filteredCategory,
+  setFilteredCategory
+}: {
+  products: Product[]
+  categories: Category[]
+  filteredCategory: Category | null
+  setFilteredCategory: React.Dispatch<React.SetStateAction<Category | null>>
+}): React.JSX.Element {
   return (
     <div className="mx-8">
       <Carousel
@@ -27,11 +30,21 @@ export default function CategoryCarousel(): React.JSX.Element {
         }}
       >
         <CarouselContent>
-          {[{ id: -1, name: 'All', image: '', colour: '#000000' }, ...categories].map(
+          {[{ id: '-1', name: 'All', image: '', colour: '#000000' }, ...categories].map(
             (category, i) => {
               return (
-                <CarouselItem key={i} className="basis-1/3">
-                  <CarouselCard category={category} />
+                <CarouselItem
+                  key={i}
+                  className="basis-1/3"
+                  onClick={() => {
+                    setFilteredCategory(category)
+                  }}
+                >
+                  <CarouselCard
+                    category={category}
+                    products={products}
+                    selected={filteredCategory?.id == category.id || null}
+                  />
                 </CarouselItem>
               )
             }

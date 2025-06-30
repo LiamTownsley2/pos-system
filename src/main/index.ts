@@ -19,6 +19,20 @@ import {
   getCategoryByName,
   updateCategory
 } from './db/models/categories'
+import {
+  createProduct,
+  deleteProduct,
+  getAllProducts,
+  getProductByCategory,
+  getProductById,
+  getProductByName,
+  updateProduct
+} from './db/models/products'
+import {
+  createStockMovement,
+  getAllStockMovements,
+  getStockMovementById
+} from './db/models/stock_movement'
 
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -33,6 +47,7 @@ function createMainWindow(): BrowserWindow {
       sandbox: false
     }
   })
+  win.setAspectRatio(16 / 9)
 
   win.on('ready-to-show', () => win.show())
 
@@ -69,6 +84,22 @@ function setupIPC(): void {
   ipcMain.handle('db:getAllCategories', () => getAllCategories())
   ipcMain.handle('db:updateCategory', (_e, id, updates) => updateCategory(id, updates))
   ipcMain.handle('db:deleteCategory', (_e, id) => deleteCategory(id))
+
+  // Products
+  ipcMain.handle('db:createProduct', (_e, product) => createProduct(product))
+  ipcMain.handle('db:getProductById', (_e, id) => getProductById(id))
+  ipcMain.handle('db:getProductByName', (_e, name) => getProductByName(name))
+  ipcMain.handle('db:getAllProducts', () => getAllProducts())
+  ipcMain.handle('db:getProductByCategory', (_e, category) => getProductByCategory(category))
+  ipcMain.handle('db:updateProduct', (_e, id, updates) => updateProduct(id, updates))
+  ipcMain.handle('db:deleteProduct', (_e, id) => deleteProduct(id))
+
+  // Stock Movement
+  ipcMain.handle('db:createStockMovement', (_e, stock_movement) =>
+    createStockMovement(stock_movement)
+  )
+  ipcMain.handle('db:getStockMovementById', (_e, id) => getStockMovementById(id))
+  ipcMain.handle('db:getAllStockMovement', () => getAllStockMovements())
 }
 
 function configureAutoUpdater(updater: AppUpdater): void {

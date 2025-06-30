@@ -13,7 +13,7 @@ export default function OrderTranscript(): React.JSX.Element {
       </header>
       <Separator />
       <main className="flex flex-col h-full">
-        <ScrollArea className="h-[70vh] w-[350px] rounded-md border p-4 ">
+        <ScrollArea className="h-[70vh] w-full rounded-md border p-4 ">
           <table className="w-full text-sm table-auto px-4">
             <thead>
               <tr className="text-left font-semibold border-b">

@@ -3,5 +3,6 @@ export type Product = {
   name: string
   unit: string
   price_per_unit: number
-  category: number
+  quantity: number
+  category: string
 }

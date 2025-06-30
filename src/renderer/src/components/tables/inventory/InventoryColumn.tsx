@@ -88,7 +88,7 @@ export function getInventoryColumns(
       }
     },
     {
-      accessorKey: 'stock',
+      accessorKey: 'quantity',
       header: ({ column }) => {
         return (
           <Button
@@ -100,7 +100,7 @@ export function getInventoryColumns(
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue('stock')}</div>
+      cell: ({ row }) => <div className="lowercase">{row.getValue('quantity') || 0}</div>
     },
     {
       id: 'actions',
@@ -133,6 +133,7 @@ export function getInventoryColumns(
                     Edit Product
                   </DropdownMenuItem>
                 </DialogTrigger>
+                {/* <EditProductDialog categories={categoryMap} product={product} /> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {
