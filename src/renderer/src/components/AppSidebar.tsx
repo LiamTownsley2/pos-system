@@ -160,10 +160,10 @@ const AppSidebarFooter = (
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <User2Icon />
                 <span>My Account</span>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem>
                 <Cog />
                 <span>My Settings</span>
