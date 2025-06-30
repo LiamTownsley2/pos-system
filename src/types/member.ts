@@ -6,5 +6,6 @@ export type Member = {
   surname: string
   email: string
   registered_at: number
+  balance: number
   phone?: string
 }

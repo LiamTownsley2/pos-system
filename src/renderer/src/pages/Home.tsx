@@ -48,6 +48,18 @@ export default function Home(): React.JSX.Element {
         </Button>
         <Button
           onClick={async () => {
+            await window.db.createBalanceMovement({
+              member_id: '0197ad9f-9392-73e4-acfb-4f53490673d3',
+              amount: 15,
+              type: 'in'
+            })
+            alert([`Added balance`].join('\n'))
+          }}
+        >
+          Add Test Balance
+        </Button>
+        <Button
+          onClick={async () => {
             alert(
               JSON.stringify(
                 await window.db.createStockMovement({

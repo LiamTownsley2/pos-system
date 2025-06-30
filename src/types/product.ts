@@ -6,3 +6,7 @@ export type Product = {
   quantity: number
   category: string
 }
+
+export type TranscriptProduct = Omit<Product, 'quantity' | 'category'> & {
+  amount: number
+}

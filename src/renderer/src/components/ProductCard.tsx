@@ -1,5 +1,4 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card'
-import { hoverShadowClass } from '@renderer/lib/utils'
 import { ShoppingCartIcon } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { Category } from 'src/types/categories'
@@ -27,7 +26,7 @@ export default function ProductCard({
   }, [product.category])
   return (
     <Card
-      className={`transform duration-200 hover:scale-105 gap-2 select-none flex flex-col justify-between ${hoverShadowClass[category?.id || 0]}`}
+      className={`transform duration-200 hover:scale-105 gap-2 select-none flex flex-col justify-between`}
       onClick={onClick}
     >
       <CardHeader>

@@ -2,15 +2,6 @@ import { default as BetterSqlite3 } from 'better-sqlite3'
 
 export default function runMigrations(db: BetterSqlite3.Database): void {
   db.exec(`
-    CREATE TABLE IF NOT EXISTS inbox (
-      id TEXT PRIMARY KEY,
-      staff_id TEXT,
-      sender TEXT,
-      message TEXT,
-      read INTEGER DEFAULT 0,
-      created_at INTEGER
-    );
-
     CREATE TABLE IF NOT EXISTS members (
       id TEXT PRIMARY KEY,
       short_id TEXT,
@@ -19,8 +10,31 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
       surname TEXT,
       email TEXT,
       phone TEXT,
+      balance REAL,
       registered_at INTEGER
     );
+
+    CREATE TABLE IF NOT EXISTS balance_movements (
+      id TEXT PRIMARY KEY,
+      member_id TEXT,
+      type TEXT CHECK(type IN ('in', 'out')),
+      amount REAL,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      FOREIGN KEY(member_id) REFERENCES members(id) ON DELETE SET NULL
+    );
+
+    CREATE TRIGGER IF NOT EXISTS update_member_balance_after_insert
+    AFTER INSERT ON balance_movements
+    FOR EACH ROW
+    BEGIN
+      UPDATE members
+      SET balance = balance + 
+        CASE NEW.type
+          WHEN 'in' THEN NEW.amount
+          WHEN 'out' THEN -NEW.amount
+        END
+      WHERE id = NEW.member_id;
+    END;
 
     CREATE TABLE IF NOT EXISTS categories (
       id TEXT PRIMARY KEY,
@@ -68,7 +82,9 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
     CREATE TABLE IF NOT EXISTS receipts (
       id TEXT PRIMARY KEY,
       member_id TEXT,
-      total_amount REAL,
+      total REAL,
+      prepaid_used REAL,
+      cash_paid REAL,
       created_at INTEGER,
       FOREIGN KEY(member_id) REFERENCES members(id)
     );
@@ -77,35 +93,36 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
       id TEXT PRIMARY KEY,
       receipt_id TEXT,
       product_id TEXT,
+      name TEXT,
       quantity INTEGER,
       price_per_unit REAL,
+      unit TEXT,
       FOREIGN KEY(receipt_id) REFERENCES receipts(id)
     );
 
-    CREATE TABLE IF NOT EXISTS inventory (
+    CREATE TABLE IF NOT EXISTS staff_users (
       id TEXT PRIMARY KEY,
-      name TEXT,
-      description TEXT,
-      quantity INTEGER,
-      price REAL
-    );
+      username TEXT UNIQUE NOT NULL,
+      forename TEXT NOT NULL,
+      surname TEXT NOT NULL,
+      password_hash TEXT NOT NULL,
+      password_last_changed INTEGER DEFAULT (strftime('%s','now')),
+      must_reset_password INTEGER DEFAULT 1 CHECK(must_reset_password IN (0,1)),
+      twofa_enabled INTEGER DEFAULT 0 CHECK(twofa_enabled IN (0,1)),
+      twofa_secret TEXT,
+      twofa_backup_codes TEXT,
+      created_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+);
 
-    CREATE TABLE IF NOT EXISTS promotions (
+    CREATE TABLE IF NOT EXISTS inbox (
       id TEXT PRIMARY KEY,
-      name TEXT,
-      description TEXT,
-      discount_percent REAL,
-      bulk_quantity INTEGER,
-      start_date INTEGER,
-      end_date INTEGER
-    );
-
-    CREATE TABLE IF NOT EXISTS promotion_products (
-      promotion_id TEXT,
-      product_id TEXT,
-      PRIMARY KEY(promotion_id, product_id),
-      FOREIGN KEY(promotion_id) REFERENCES promotions(id),
-      FOREIGN KEY(product_id) REFERENCES inventory(id)
+      recipient_id TEXT NOT NULL,
+      sender_id TEXT,
+      title TEXT NOT NULL,
+      content TEXT,
+      is_deleted INTEGER DEFAULT 0 CHECK(is_deleted IN (0,1)),
+      read_at INTEGER,
+      created_at INTEGER DEFAULT (strftime('%s','now'))
     );
 
     CREATE TABLE IF NOT EXISTS audit_logs (

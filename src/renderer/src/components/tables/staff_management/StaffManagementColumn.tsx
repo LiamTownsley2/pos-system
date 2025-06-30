@@ -9,110 +9,146 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '../../ui/dropdown-menu'
-import { Product } from 'src/types/product'
-import { Category } from 'src/types/categories'
 import { Dialog, DialogTrigger } from '@renderer/components/ui/dialog'
-import { ManageStockDialog } from '@renderer/dialog/ManageStockDialog'
+import { StaffUser } from 'src/types/staff_users'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
 
-export function getInventoryColumns(
-  categoryMap: Category[],
+export function getStaffManagementColumns(
   setDialog: (d: 'edit' | 'delete' | null) => void,
-  setProduct: (d: Product | null) => void
-): ColumnDef<Product>[] {
+  setStaffMember: (d: StaffUser | null) => void
+): ColumnDef<StaffUser>[] {
   return [
     {
-      accessorKey: 'name',
+      accessorKey: 'username',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Name
+            Username
             <ArrowUpDown />
           </Button>
         )
       },
-      cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>
+      cell: ({ row }) => <div>{row.getValue('username')}</div>
     },
     {
-      accessorKey: 'price_per_unit',
+      accessorKey: 'forename',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Price
+            Forename
+            <ArrowUpDown />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className="capitalize">{row.getValue('forename')}</div>
+    },
+    {
+      accessorKey: 'surname',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Surname
+            <ArrowUpDown />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className="capitalize">{row.getValue('surname')}</div>
+    },
+    // {
+    //   accessorKey: 'twofa_enabled',
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    //       >
+    //         Two Factor
+    //         <ArrowUpDown />
+    //       </Button>
+    //     )
+    //   },
+    //   cell: ({ row }) => (
+    //     <div className="capitalize flex flex-row gap-2">
+    //       <span
+    //         className="h-3 w-3 rounded-full block my-auto"
+    //         style={{ backgroundColor: row.getValue('twofa_enabled') == 1 ? 'green' : 'red' }}
+    //       />
+    //       <div className="capitalize">
+    //         {row.getValue('twofa_enabled') == 1 ? 'Enabled' : 'Disabled'}
+    //       </div>
+    //     </div>
+    //   )
+    // },
+    {
+      accessorKey: 'password_last_changed',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Password Last Changed
             <ArrowUpDown />
           </Button>
         )
       },
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue('price_per_unit'))
-        const formatted = new Intl.NumberFormat('en-GB', {
-          style: 'currency',
-          currency: 'GBP'
-        }).format(amount)
+        const password_last_changed = row.getValue('password_last_changed')
+        let timestamp: number =
+          typeof password_last_changed === 'string'
+            ? parseFloat(password_last_changed)
+            : (password_last_changed as number)
 
-        return (
-          <div>
-            {formatted} / {row.original.unit}
-          </div>
-        )
+        // Normalize timestamp to milliseconds
+        if (timestamp < 1e12) {
+          timestamp *= 1000
+        }
+
+        return <div>{dayjs(timestamp).fromNow()}</div>
       }
     },
     {
-      accessorKey: 'category',
+      accessorKey: 'created_at',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Category
+            Created At
             <ArrowUpDown />
           </Button>
         )
       },
       cell: ({ row }) => {
-        const category = categoryMap.find((x) => x.id == row.getValue('category'))
-        return (
-          <div className="capitalize flex flex-row gap-2">
-            <span
-              className="h-3 w-3 rounded-full block my-auto"
-              style={{ backgroundColor: category?.colour }}
-            />
-            {category?.name}
-          </div>
-        )
+        const created_at = row.getValue('created_at')
+        let timestamp: number =
+          typeof created_at === 'string' ? parseFloat(created_at) : (created_at as number)
+
+        // Normalize timestamp to milliseconds
+        if (timestamp < 1e12) {
+          timestamp *= 1000
+        }
+
+        return <div>{dayjs(timestamp).fromNow()}</div>
       }
-    },
-    {
-      accessorKey: 'quantity',
-      header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Stock
-            <ArrowUpDown />
-          </Button>
-        )
-      },
-      cell: ({ row }) => (
-        <div className="lowercase flex flex-row gap-4 align-middle">
-          <p className="my-auto">{row.getValue('quantity') || 0}</p>
-          <ManageStockDialog product_id={row.original.id} />
-        </div>
-      )
     },
     {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const product = row.original
+        const staff_member = row.original
         return (
           <Dialog>
             <DropdownMenu>
@@ -124,7 +160,7 @@ export function getInventoryColumns(
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => navigator.clipboard.writeText(product.id)}>
+                <DropdownMenuItem onClick={() => navigator.clipboard.writeText(staff_member.id)}>
                   <Copy />
                   Copy Product ID
                 </DropdownMenuItem>
@@ -132,7 +168,7 @@ export function getInventoryColumns(
                   <DropdownMenuItem
                     onClick={() => {
                       setDialog('edit')
-                      setProduct(product)
+                      setStaffMember(staff_member)
                     }}
                   >
                     <Edit />
@@ -144,7 +180,7 @@ export function getInventoryColumns(
                 <DropdownMenuItem
                   onClick={() => {
                     setDialog('delete')
-                    setProduct(product)
+                    setStaffMember(staff_member)
                   }}
                   className="text-red-500"
                 >

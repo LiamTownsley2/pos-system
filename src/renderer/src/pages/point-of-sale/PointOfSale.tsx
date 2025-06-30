@@ -4,15 +4,20 @@ import OrderTranscript from '@renderer/components/OrderTranscript'
 import ProductGrid from '@renderer/components/ProductGrid'
 import { Separator } from '@renderer/components/ui/separator'
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Category } from 'src/types/categories'
-import { Product } from 'src/types/product'
+import { Member } from 'src/types/member'
+import { Product, TranscriptProduct } from 'src/types/product'
 
 export default function PointOfSale(): React.JSX.Element {
+  const { member_id } = useParams()
+  const [member, setMember] = useState<Member | null>(null)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [products, setProducts] = useState<Product[] | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [filteredCategory, setFilteredCategory] = useState<Category | null>(null)
+  const [transcriptProducts, setTranscriptProducts] = useState<TranscriptProduct[] | null>(null)
 
   useEffect(() => {
     async function fetchCategories(): Promise<void> {
@@ -26,6 +31,16 @@ export default function PointOfSale(): React.JSX.Element {
     fetchCategories()
     fetchProducts()
   }, [])
+
+  useEffect(() => {
+    async function fetchMember(): Promise<void> {
+      if (member_id) {
+        const _member = await window.db.getMemberById(member_id)
+        setMember(_member)
+      }
+    }
+    fetchMember()
+  }, [member_id])
 
   return (
     <main className="mx-4 overflow-y-hidden">
@@ -54,12 +69,17 @@ export default function PointOfSale(): React.JSX.Element {
             </div>
           )}
         </main>
-        <OrderTranscript />
+        <OrderTranscript
+          member={member}
+          transcriptProducts={transcriptProducts}
+          setTranscriptProducts={setTranscriptProducts}
+        />
       </div>
       <AddItemDrawer
         selectedProduct={selectedProduct}
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
+        setTranscriptProducts={setTranscriptProducts}
       />
     </main>
   )

@@ -1,0 +1,57 @@
+import { useState } from 'react'
+import { Button } from '@renderer/components/ui/button'
+import { Input } from '@renderer/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@renderer/components/ui/card'
+import { useAuth } from '@renderer/components/AuthContext'
+
+export default function TwoFactor(): React.JSX.Element {
+  const [code, setCode] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const { verify2fa } = useAuth()
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    try {
+      await verify2fa(code)
+      window.location.hash = `#/`
+      //   await window.db.verifyTwoFactor(code)
+    } catch (_: unknown) {
+      setError('Invalid code. Please try again.')
+      alert(_)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex w-full min-h-screen items-center justify-center bg-muted">
+      <Card className="w-full max-w-sm shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-center">
+            Two-Factor Authentication
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <Input
+              type="text"
+              placeholder="Enter 6-digit code"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              maxLength={6}
+              pattern="\d{6}"
+              required
+              autoFocus
+            />
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            <Button type="submit" className="w-full mt-2" disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

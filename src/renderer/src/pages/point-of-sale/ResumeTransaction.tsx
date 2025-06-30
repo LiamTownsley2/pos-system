@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Member } from 'src/types/member'
 import { UserAllotmentsLink } from 'src/types/user_allotments'
 
-export default function SelectMember(): React.JSX.Element {
+export default function ResumeTransaction(): React.JSX.Element {
   const [members, setMembers] = useState<Member[] | null>(null)
   const [gardenLinks, setGardenLinks] = useState<UserAllotmentsLink[] | null>(null)
   const [search, setSearch] = useState('')
@@ -48,7 +48,7 @@ export default function SelectMember(): React.JSX.Element {
       <div className="p-2 mt-4 w-full flex-1 flex flex-col items-center justify-center">
         <Card className="w-full">
           <CardTitle className="text-center mx-8">
-            <h1 className="text-5xl font-semibold my-8">Select Member</h1>
+            <h1 className="text-5xl font-semibold my-8">Resume Held Transaction</h1>
             <Separator />
           </CardTitle>
           {/* <Link to={'/select-member/pos'} className="mx-2 h-8">

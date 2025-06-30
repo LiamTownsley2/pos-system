@@ -12,6 +12,7 @@ import {
 } from '../../ui/dropdown-menu'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
 
 export const membership_column: ColumnDef<Member>[] = [
   {
@@ -83,8 +84,6 @@ export const membership_column: ColumnDef<Member>[] = [
       )
     },
     cell: ({ row }) => {
-      dayjs.extend(relativeTime)
-
       const registered_at = row.getValue('registered_at')
       let timestamp: number =
         typeof registered_at === 'string' ? parseFloat(registered_at) : (registered_at as number)

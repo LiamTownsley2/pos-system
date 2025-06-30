@@ -9,11 +9,16 @@ import {
 } from './ui/breadcrumb'
 import { Link, useLocation } from 'react-router-dom'
 
-const toTitle = (str: string): string =>
-  str
+const toTitle = (str: string): string => {
+  // If the segment looks like a UUIDv7, return as-is
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str)) {
+    return str
+  }
+  return str
     .replace(/-/g, ' ')
     .replace(/\b\w/g, (l) => l.toUpperCase())
     .replace(/^pos$/i, 'Point of Sale')
+}
 
 export default function AppBreadcrumb(): React.JSX.Element {
   const location = useLocation()

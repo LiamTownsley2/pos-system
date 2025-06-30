@@ -7,6 +7,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar'
@@ -20,7 +21,6 @@ import {
   Home,
   Inbox,
   LogOut,
-  Percent,
   PlusCircle,
   Search,
   Settings,
@@ -35,10 +35,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from './ui/dropdown-menu'
-import { SearchForm } from './SearchForm'
 import { HomeButton } from './HomeButton'
 import { Button } from './ui/button'
 import { Link } from 'react-router-dom'
+import { useAuth } from './AuthContext'
+import { StaffUser } from 'src/types/staff_users'
+import { useEffect, useState } from 'react'
 
 const groups = [
   {
@@ -95,11 +97,6 @@ const groups = [
         icon: FileBarChart
       },
       {
-        title: 'Promotions',
-        url: '#/promotions',
-        icon: Percent
-      },
-      {
         title: 'Audit Logs',
         url: '#/audit-logs',
         icon: ClipboardList
@@ -113,31 +110,50 @@ const groups = [
   }
 ]
 
-const AppContent = (
-  <SidebarContent>
-    {groups.map((item, i) => (
-      <SidebarGroup key={i}>
-        <SidebarGroupLabel>{item.label}</SidebarGroupLabel>
-        <SidebarGroupContent>
-          <SidebarMenu>
-            {item.children.map((child) => (
-              <SidebarMenuItem key={child.title}>
-                <SidebarMenuButton asChild>
-                  <a href={child.url}>
-                    <child.icon />
-                    <span>{child.title}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    ))}
-  </SidebarContent>
-)
+function AppContent({ user_id, refresh }: { user_id: string; refresh: number }): React.JSX.Element {
+  const [unreadCount, setUnreadCount] = useState<number>(0)
 
-const AppSidebarFooter = (username: string): React.JSX.Element => {
+  useEffect(() => {
+    window.db.getInboxByRecipientId(user_id).then((inbox) => {
+      const count = inbox.filter((msg) => msg.read_at == null).length
+      setUnreadCount(count || 0)
+    })
+  }, [user_id, refresh])
+
+  return (
+    <SidebarContent>
+      {groups.map((item, i) => (
+        <SidebarGroup key={i}>
+          <SidebarGroupLabel>{item.label}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {item.children.map((child) => (
+                <SidebarMenuItem key={child.title}>
+                  <SidebarMenuButton asChild>
+                    <a href={child.url}>
+                      <child.icon />
+                      <span>{child.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                  {child.title == 'Inbox' && unreadCount > 0 && (
+                    <SidebarMenuBadge className="bg-red-400 text-white">
+                      {unreadCount}
+                    </SidebarMenuBadge>
+                  )}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      ))}
+    </SidebarContent>
+  )
+}
+
+const AppSidebarFooter = (
+  user: Omit<StaffUser, 'password_hash' | 'twofa_backup_codes' | 'twofa_secret'>
+): React.JSX.Element => {
+  const { logout } = useAuth()
   return (
     <SidebarFooter>
       <SidebarMenu>
@@ -145,7 +161,7 @@ const AppSidebarFooter = (username: string): React.JSX.Element => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton>
-                <User2 /> {username}
+                <User2 /> {user.forename} {user.surname} ({user.username})
                 <ChevronUp className="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
@@ -158,7 +174,7 @@ const AppSidebarFooter = (username: string): React.JSX.Element => {
                 <Cog />
                 <span>My Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem style={{ color: '#ff0000' }}>
+              <DropdownMenuItem style={{ color: '#ff0000' }} onClick={logout}>
                 <LogOut color="#ff0000" />
                 <span>Sign Out</span>
               </DropdownMenuItem>
@@ -170,20 +186,20 @@ const AppSidebarFooter = (username: string): React.JSX.Element => {
   )
 }
 
-export function AppSidebar({ username }: { username: string }): React.JSX.Element {
+export function AppSidebar({ refresh }: { refresh: number }): React.JSX.Element {
+  const { user } = useAuth()
   return (
     <Sidebar>
       <SidebarHeader>
         <HomeButton />
-        <SearchForm />
-        <Link to={'/select-member'} className="mx-2 h-8">
+        <Link to={'/pos'} className="mx-2 h-8">
           <Button variant={'outline'} className="h-8 w-full">
             <PlusCircle /> Begin Transaction
           </Button>
         </Link>
       </SidebarHeader>
-      {AppContent}
-      {AppSidebarFooter(username)}
+      {user && AppContent({ user_id: user.id, refresh })}
+      {user && AppSidebarFooter(user)}
     </Sidebar>
   )
 }

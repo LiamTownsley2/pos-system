@@ -14,8 +14,8 @@ export function createMember(member: Omit<Member, 'id' | 'registered_at'>): Memb
     .toUpperCase()
   db.prepare(
     `
-            INSERT INTO members (id, short_id, title, forename, surname, email, phone, registered_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%s','now'))
+            INSERT INTO members (id, short_id, title, forename, surname, email, phone, balance, registered_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 0, strftime('%s','now'))
         `
   ).run(
     _id,

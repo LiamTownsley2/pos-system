@@ -41,6 +41,45 @@ import {
   getAllotmentLinkByMemberId,
   updateAllotmentLink
 } from './db/models/user_allotments'
+import {
+  createBalanceMovement,
+  getAllBalanceMovements,
+  getBalanceMovementById
+} from './db/models/balance_movement'
+import {
+  createReceipt,
+  createReceiptItem,
+  deleteReceipt,
+  deleteReceiptItem,
+  getAllReceipts,
+  getReceiptById,
+  getReceiptItemById,
+  getReceiptItemsByReceiptId,
+  updateReceipt,
+  updateReceiptItem
+} from './db/models/receipts'
+import {
+  createInbox,
+  getAllInboxes,
+  getInboxById,
+  getInboxByRecipientId,
+  hardDeleteInbox,
+  softDeleteInbox,
+  updateInbox
+} from './db/models/inbox'
+import {
+  createStaffUser,
+  deleteStaffUser,
+  getStaffUserById,
+  getStaffUserByUsername,
+  listStaffUsers,
+  updateStaffUser
+} from './db/models/staff_users'
+import { hash, verify } from 'argon2'
+import { StaffUser } from '../types/staff_users'
+
+let currentUser: Omit<StaffUser, 'password_hash' | 'twofa_backup_codes' | 'twofa_secret'> | null =
+  null
 
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -77,6 +116,28 @@ function createMainWindow(): BrowserWindow {
 function setupIPC(): void {
   ipcMain.on('update', () => autoUpdater.checkForUpdatesAndNotify())
   ipcMain.handle('get-app-version', () => app.getVersion())
+  ipcMain.handle(
+    'encrypt-password',
+    async (_e, password) =>
+      await hash(password, {
+        memoryCost: 19456,
+        timeCost: 2,
+        parallelism: 1
+      })
+  )
+  ipcMain.handle('auth:login', async (_e, username, password) => {
+    const user = getStaffUserByUsername(username)
+    if (!user) return { success: false }
+
+    const valid = await verify(user.password_hash, password)
+    if (!valid) return { success: false }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password_hash, twofa_backup_codes, twofa_secret, ...userWithoutPassword } = user
+    currentUser = userWithoutPassword
+    return { success: true }
+  })
+  ipcMain.handle('auth:getCurrentUser', () => currentUser)
 
   // Members
   ipcMain.handle('db:createMember', (_e, member) => createMember(member))
@@ -120,6 +181,46 @@ function setupIPC(): void {
   ipcMain.handle('db:getAllAllotmentLinks', () => getAllAllotmentLinks())
   ipcMain.handle('db:updateAllotmentLink', (_e, id, updates) => updateAllotmentLink(id, updates))
   ipcMain.handle('db:deleteAllotmentLink', (_e, id) => deleteAllotmentLink(id))
+
+  // Balance Movement
+  ipcMain.handle('db:createBalanceMovement', (_e, balance_movement) =>
+    createBalanceMovement(balance_movement)
+  )
+  ipcMain.handle('db:getBalanceMovementById', (_e, id) => getBalanceMovementById(id))
+  ipcMain.handle('db:getAllBalanceMovements', () => getAllBalanceMovements())
+
+  // Receipts
+  ipcMain.handle('db:createReceipt', (_e, receipt) => createReceipt(receipt))
+  ipcMain.handle('db:getReceiptById', (_e, id) => getReceiptById(id))
+  ipcMain.handle('db:getAllReceipts', () => getAllReceipts())
+  ipcMain.handle('db:updateReceipt', (_e, id, updates) => updateReceipt(id, updates))
+  ipcMain.handle('db:deleteReceipt', (_e, id) => deleteReceipt(id))
+
+  // Receipt Items
+  ipcMain.handle('db:createReceiptItem', (_e, item) => createReceiptItem(item))
+  ipcMain.handle('db:getReceiptItemById', (_e, id) => getReceiptItemById(id))
+  ipcMain.handle('db:getReceiptItemsByReceiptId', (_e, receipt_id) =>
+    getReceiptItemsByReceiptId(receipt_id)
+  )
+  ipcMain.handle('db:updateReceiptItem', (_e, id, updates) => updateReceiptItem(id, updates))
+  ipcMain.handle('db:deleteReceiptItem', (_e, id) => deleteReceiptItem(id))
+
+  // Inbox
+  ipcMain.handle('db:createInbox', (_e, message) => createInbox(message))
+  ipcMain.handle('db:getInboxById', (_e, id) => getInboxById(id))
+  ipcMain.handle('db:getInboxByRecipientId', (_e, id) => getInboxByRecipientId(id))
+  ipcMain.handle('db:getAllInboxes', () => getAllInboxes())
+  ipcMain.handle('db:updateInbox', (_e, id, updates) => updateInbox(id, updates))
+  ipcMain.handle('db:softDeleteInbox', (_e, id) => softDeleteInbox(id))
+  ipcMain.handle('db:hardDeleteInbox', (_e, id) => hardDeleteInbox(id))
+
+  // Staff Management
+  ipcMain.handle('db:createStaffUser', (_e, user) => createStaffUser(user))
+  ipcMain.handle('db:getStaffUserById', (_e, id) => getStaffUserById(id))
+  ipcMain.handle('db:getStaffUserByUsername', (_e, username) => getStaffUserByUsername(username))
+  ipcMain.handle('db:listStaffUsers', () => listStaffUsers())
+  ipcMain.handle('db:updateStaffUser', (_e, id, updates) => updateStaffUser(id, updates))
+  ipcMain.handle('db:deleteStaffUser', (_e, id) => deleteStaffUser(id))
 }
 
 function configureAutoUpdater(updater: AppUpdater): void {
