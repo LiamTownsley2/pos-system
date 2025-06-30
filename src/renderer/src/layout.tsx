@@ -6,6 +6,7 @@ import { Separator } from './components/ui/separator'
 import AppBreadcrumb from './components/AppBreadcrumb'
 import { Clock, LockKeyhole } from 'lucide-react'
 import { Button } from './components/ui/button'
+import { useAuth } from './components/AuthContext'
 
 export default function Layout(): React.JSX.Element {
   const [currentTime, setCurrentTime] = useState(() => {
@@ -13,6 +14,7 @@ export default function Layout(): React.JSX.Element {
     return now.toLocaleTimeString('en-US', { hour12: false })
   })
   const [refresh, setRefresh] = useState(0)
+  const { logout } = useAuth()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,7 +33,7 @@ export default function Layout(): React.JSX.Element {
           <Separator orientation="vertical" />
           <AppBreadcrumb />
           <div className="ml-auto flex flex-row">
-            <Button variant={'ghost'}>
+            <Button variant={'ghost'} onClick={logout}>
               <LockKeyhole /> Lock System
             </Button>
             <div className="flex items-center">
