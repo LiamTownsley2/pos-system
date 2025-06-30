@@ -35,8 +35,7 @@ export default function Home(): React.JSX.Element {
               surname: 'user',
               email: 'testuser@test.com',
               phone: '07707129263',
-              title: '',
-              short_id: ''
+              title: 'Dr'
             })
             alert(
               [`ID: ${_member.id}`, `Email: ${_member.email}`, `Name: ${_member.forename}`].join(
