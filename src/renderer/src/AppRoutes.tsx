@@ -12,7 +12,8 @@ import MemberLookup from './pages/MemberLookup'
 import Inventory from './pages/Inventory'
 import StaffManagement from './pages/StaffManagement'
 import NotFound from './pages/NotFound'
-import Login from './pages/login'
+import SalesReportPage from './pages/SalesReport'
+import Login from './pages/Login'
 
 export default function AppRoutes(): React.JSX.Element {
   const { user, isLoading } = useAuth()
@@ -35,6 +36,7 @@ export default function AppRoutes(): React.JSX.Element {
         <Route path="pos/resume-transaction" element={<ResumeTransaction />} />
         <Route path="pos/:member_id" element={<PointOfSale />} />
         <Route path="register-member" element={<RegisterMember />} />
+        <Route path="sales-reports" element={<SalesReportPage />} />
         <Route path="member-lookup" element={<MemberLookup />} />
         <Route path="inventory" element={<Inventory />} />
         <Route path="staff-management" element={<StaffManagement />} />

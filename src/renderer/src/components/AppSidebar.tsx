@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/sidebar'
 import {
   Boxes,
-  Calendar,
   ChevronUp,
   ClipboardList,
   Cog,
@@ -55,11 +54,6 @@ const groups = [
         title: 'Inbox',
         url: '#/inbox',
         icon: Inbox
-      },
-      {
-        title: 'Calendar',
-        url: '#/calendar',
-        icon: Calendar
       }
     ]
   },
