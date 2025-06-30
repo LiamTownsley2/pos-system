@@ -58,6 +58,13 @@ export default function runMigrations(db: BetterSqlite3.Database): void {
       WHERE id = NEW.product_id;
     END;
 
+    CREATE TABLE IF NOT EXISTS user_allotments (
+      id TEXT PRIMARY KEY,
+      member_id TEXT,
+      created_at INTEGER DEFAULT (strftime('%s','now')),
+      FOREIGN KEY(member_id) REFERENCES members(id) ON DELETE SET NULL
+    );
+
     CREATE TABLE IF NOT EXISTS receipts (
       id TEXT PRIMARY KEY,
       member_id TEXT,

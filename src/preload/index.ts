@@ -4,6 +4,7 @@ import { Member } from '../types/member'
 import { Category } from '../types/categories'
 import { Product } from '../types/product'
 import { StockMovement } from '../types/stock_movement'
+import { UserAllotmentsLink } from '../types/user_allotments'
 
 // Custom APIs for renderer
 const api = {}
@@ -17,7 +18,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('db', {
       // Members
-      createMember: (member: Omit<Member, 'id' | 'registered_at'>) =>
+      createMember: (member: Omit<Member, 'id' | 'registered_at' | 'short_id'>) =>
         ipcRenderer.invoke('db:createMember', member),
       getMemberById: (id: string) => ipcRenderer.invoke('db:getMemberById', id),
       getAllMembers: () => ipcRenderer.invoke('db:getAllMembers'),
@@ -51,7 +52,19 @@ if (process.contextIsolated) {
       createStockMovement: (stock_movement: Omit<StockMovement, 'id' | 'created_at'>) =>
         ipcRenderer.invoke('db:createStockMovement', stock_movement),
       getStockMovementById: (id: string) => ipcRenderer.invoke('db:getStockMovementById', id),
-      getAllStockMovements: () => ipcRenderer.invoke('db:getAllStockMovement')
+      getAllStockMovements: () => ipcRenderer.invoke('db:getAllStockMovement'),
+
+      // Allotment Link
+      createAllotmentLink: (alllotment_link: Omit<UserAllotmentsLink, 'created_at'>) =>
+        ipcRenderer.invoke('db:createAllotmentLink', alllotment_link),
+      getAllotmentLinkByGardenId: (id: string) =>
+        ipcRenderer.invoke('db:getAllotmentLinkByGardenId', id),
+      getAllotmentLinkByMemberId: (member_id: string) =>
+        ipcRenderer.invoke('db:getAllotmentLinkByMemberId', member_id),
+      getAllAllotmentLinks: () => ipcRenderer.invoke('db:getAllAllotmentLinks'),
+      updateAllotmentLink: (id: string, updates: Omit<UserAllotmentsLink, 'created_at'>) =>
+        ipcRenderer.invoke('db:updateAllotmentLink', id, updates),
+      deleteAllotmentLink: (id: string) => ipcRenderer.invoke('db:deleteAllotmentLink', id)
     })
   } catch (error) {
     console.error(error)

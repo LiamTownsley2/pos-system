@@ -17,6 +17,8 @@ import { Check, X } from 'lucide-react'
 import { Toaster } from './ui/sonner'
 import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Member } from 'src/types/member'
+import { UserAllotmentsLink } from 'src/types/user_allotments'
 
 const titles = [
   'Mr',
@@ -41,11 +43,13 @@ const formSchema = z.object({
   surname: z.string().min(2, 'Surname must be at least 2 characters.'),
   email: z.string().email('Invalid email address.'),
   garden: z.string().refine(
-    (val) => {
+    async (val) => {
       const num = Number(val)
-      return !isNaN(num) && num > 0 && num < 100
+      if (isNaN(num) || num <= 0 || num >= 100) return false
+      const allotment = await window.db.getAllotmentLinkByGardenId(num.toString())
+      return !allotment
     },
-    { message: 'Garden Number must be a number between 1 and 99' }
+    { message: 'Garden number is either invalid or already registered.' }
   ),
   phone: z
     .string()
@@ -70,21 +74,33 @@ export function RegisterMemberForm(): React.JSX.Element {
 
   const onSubmit = React.useCallback(
     (values: z.infer<typeof formSchema>) => {
-      console.log(values)
-      window.db
-        .createMember({
+      async function submitMemberDetails(): Promise<Member> {
+        return await window.db.createMember({
           title: values.title,
           forename: values.forename,
           surname: values.surname,
           email: values.email,
           phone: values.phone
         })
-        .then((member) => {
-          toast.success('Member Registered Sucesfully', {
-            description: `${member.title}. ${member.surname} (${member.id}) has been registered sucesfully for Garden ${values.garden}`
-          })
-          form.reset()
+      }
+      async function getGardenLinks(): Promise<{ link: UserAllotmentsLink; member: Member }> {
+        const _member = await submitMemberDetails()
+        const _link = await window.db.createAllotmentLink({
+          id: values.garden,
+          member_id: _member.id
         })
+        return {
+          link: _link,
+          member: _member
+        }
+      }
+      getGardenLinks().then((details) => {
+        console.log(details)
+        toast.success('Member Registered Sucesfully', {
+          description: `${details.member.title}. ${details.member.surname} (${details.member.id}) has been registered sucesfully for Garden ${details.link.id}`
+        })
+        form.reset()
+      })
     },
     [form]
   )

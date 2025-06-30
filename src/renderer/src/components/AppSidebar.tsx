@@ -176,7 +176,7 @@ export function AppSidebar({ username }: { username: string }): React.JSX.Elemen
       <SidebarHeader>
         <HomeButton />
         <SearchForm />
-        <Link to={'/pos'} className="mx-2 h-8">
+        <Link to={'/select-member'} className="mx-2 h-8">
           <Button variant={'outline'} className="h-8 w-full">
             <PlusCircle /> Begin Transaction
           </Button>

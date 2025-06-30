@@ -33,6 +33,14 @@ import {
   getAllStockMovements,
   getStockMovementById
 } from './db/models/stock_movement'
+import {
+  createAllotmentLink,
+  deleteAllotmentLink,
+  getAllAllotmentLinks,
+  getAllotmentLinkByGardenId,
+  getAllotmentLinkByMemberId,
+  updateAllotmentLink
+} from './db/models/user_allotments'
 
 function createMainWindow(): BrowserWindow {
   const win = new BrowserWindow({
@@ -100,6 +108,18 @@ function setupIPC(): void {
   )
   ipcMain.handle('db:getStockMovementById', (_e, id) => getStockMovementById(id))
   ipcMain.handle('db:getAllStockMovement', () => getAllStockMovements())
+
+  // Allotment Link
+  ipcMain.handle('db:createAllotmentLink', (_e, allotment_link) =>
+    createAllotmentLink(allotment_link)
+  )
+  ipcMain.handle('db:getAllotmentLinkByGardenId', (_e, id) => getAllotmentLinkByGardenId(id))
+  ipcMain.handle('db:getAllotmentLinkByMemberId', (_e, member_id) =>
+    getAllotmentLinkByMemberId(member_id)
+  )
+  ipcMain.handle('db:getAllAllotmentLinks', () => getAllAllotmentLinks())
+  ipcMain.handle('db:updateAllotmentLink', (_e, id, updates) => updateAllotmentLink(id, updates))
+  ipcMain.handle('db:deleteAllotmentLink', (_e, id) => deleteAllotmentLink(id))
 }
 
 function configureAutoUpdater(updater: AppUpdater): void {
