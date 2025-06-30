@@ -24,7 +24,6 @@ import {
   Search,
   Settings,
   User2,
-  User2Icon,
   UserPlus,
   Users
 } from 'lucide-react'
