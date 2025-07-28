@@ -79,7 +79,7 @@
     "@tailwindcss/vite": "^4.1.8",
     "@types/argon2-browser": "^1.18.4",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.1.0",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.3.4",
